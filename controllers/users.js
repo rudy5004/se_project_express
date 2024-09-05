@@ -12,7 +12,9 @@ const getUsers = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      return res.status(internalServerError).send({ message: err.message });
+      return res
+        .status(internalServerError)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -31,9 +33,11 @@ const getUser = (req, res) => {
         return res.status(notFound).send({ message: err.message });
       }
       if (err.name === "CastError") {
-        return res.status(badRequest).send({ message: err.message });
+        return res.status(badRequest).send({ message: "Invalid data" });
       }
-      return res.status(internalServerError).json({ message: err.message });
+      return res
+        .status(internalServerError)
+        .json({ message: "An error has occurred on the server" });
     });
 };
 
@@ -47,9 +51,11 @@ const createUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(badRequest).send({ message: err.message });
+        return res.status(badRequest).send({ message: "Invalid data" });
       }
-      return res.status(internalServerError).json({ message: err.message });
+      return res
+        .status(internalServerError)
+        .json({ message: "An error has occurred on the server" });
     });
 };
 

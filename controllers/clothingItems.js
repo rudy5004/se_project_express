@@ -10,7 +10,9 @@ const getItems = (req, res) => {
     .then((items) => res.status(200).send(items))
     .catch((err) => {
       console.error(err);
-      res.status(internalServerError).send({ message: err.message });
+      res
+        .status(internalServerError)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -21,7 +23,12 @@ const createItem = (req, res) => {
     .then((item) => res.status(201).send(item))
     .catch((err) => {
       console.error(err);
-      res.status(badRequest).send({ message: err.message });
+      if (err.name === "ValidationError") {
+        return res.status(badRequest).send({ message: "Invalid data" });
+      }
+      return res
+        .status(internalServerError)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -39,9 +46,11 @@ const deleteItem = (req, res) => {
       console.error(err);
       if (err.statusCode === notFound)
         return res.status(notFound).send({ message: err.message });
-      if (err.name === "CastError")
-        return res.status(badRequest).send({ message: err.message });
-      return res.status(internalServerError).json({ message: err.message });
+      if (err.name === "CastError" || err.name === "ValidationError")
+        return res.status(badRequest).send({ message: "Invalid data" });
+      return res
+        .status(internalServerError)
+        .json({ message: "An error has occurred on the server" });
     });
 };
 
@@ -61,9 +70,11 @@ const disLikeItem = (req, res) =>
       console.error(err);
       if (err.statusCode === notFound)
         return res.status(notFound).send({ message: err.message });
-      if (err.name === "CastError")
-        return res.status(badRequest).send({ message: err.message });
-      return res.status(internalServerError).json({ message: err.message });
+      if (err.name === "CastError" || err.name === "ValidationError")
+        return res.status(badRequest).send({ message: "Invalid data" });
+      return res
+        .status(internalServerError)
+        .json({ message: "An error has occurred on the server" });
     });
 
 const likeItem = (req, res) =>
@@ -82,9 +93,11 @@ const likeItem = (req, res) =>
       console.error(err);
       if (err.statusCode === notFound)
         return res.status(notFound).send({ message: err.message });
-      if (err.name === "CastError")
-        return res.status(badRequest).send({ message: err.message });
-      return res.status(internalServerError).json({ message: err.message });
+      if (err.name === "CastError" || err.name === "ValidationError")
+        return res.status(badRequest).send({ message: "Invalid data" });
+      return res
+        .status(internalServerError)
+        .json({ message: "An error has occurred on the server" });
     });
 
 module.exports = { getItems, createItem, deleteItem, disLikeItem, likeItem };
