@@ -41,7 +41,7 @@ const deleteItem = (req, res) => {
         return res.status(notFound).send({ message: err.message });
       if (err.name === "CastError")
         return res.status(badRequest).send({ message: err.message });
-      res.status(internalServerError).json({ message: err.message });
+      return res.status(internalServerError).json({ message: err.message });
     });
 };
 
@@ -63,9 +63,8 @@ const disLikeItem = (req, res) =>
         return res.status(notFound).send({ message: err.message });
       if (err.name === "CastError")
         return res.status(badRequest).send({ message: err.message });
-      res.status(internalServerError).json({ message: err.message });
+      return res.status(internalServerError).json({ message: err.message });
     });
-//likeItem,
 
 const likeItem = (req, res) =>
   ClothingItem.findByIdAndUpdate(
@@ -85,7 +84,7 @@ const likeItem = (req, res) =>
         return res.status(notFound).send({ message: err.message });
       if (err.name === "CastError")
         return res.status(badRequest).send({ message: err.message });
-      res.status(internalServerError).json({ message: err.message });
+      return res.status(internalServerError).json({ message: err.message });
     });
 
 module.exports = { getItems, createItem, deleteItem, disLikeItem, likeItem };

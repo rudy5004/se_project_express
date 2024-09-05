@@ -1,12 +1,9 @@
 const User = require("../models/user");
-//const errorHandler = require("../utils/errors");
 const {
   badRequest,
   notFound,
   internalServerError,
 } = require("../utils/errors");
-
-//GET /users
 
 const getUsers = (req, res) => {
   User.find({})
@@ -32,14 +29,13 @@ const getUser = (req, res) => {
       console.error(err);
       if (err.statusCode === notFound) {
         return res.status(notFound).send({ message: err.message });
-      } else if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res.status(badRequest).send({ message: err.message });
       }
-      res.status(internalServerError).json({ message: err.message });
+      return res.status(internalServerError).json({ message: err.message });
     });
 };
-
-//POST /users
 
 const createUser = (req, res) => {
   const { name, avatar } = req.body;
@@ -53,7 +49,7 @@ const createUser = (req, res) => {
       if (err.name === "ValidationError") {
         return res.status(badRequest).send({ message: err.message });
       }
-      res.status(internalServerError).json({ message: err.message });
+      return res.status(internalServerError).json({ message: err.message });
     });
 };
 
