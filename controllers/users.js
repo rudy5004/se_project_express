@@ -106,19 +106,17 @@ const login = (req, res) => {
           .status(notAuthorized)
           .send({ message: "Invalid email or password" });
       }
-      return bcrypt
-        .compare(password, user.password)
-        .then((matched) =>
-          !matched
-            ? res
-                .status(notAuthorized)
-                .send({ message: "Invalid email or password" })
-            : res.send({
-                token: jwt.sign({ _id: user._id }, JWT_SECRET, {
-                  expiresIn: "7d",
-                }),
-              })
-        );
+      return bcrypt.compare(password, user.password).then((matched) =>
+        !matched
+          ? res
+              .status(notAuthorized)
+              .send({ message: "Invalid email or password" })
+          : res.send({
+              token: jwt.sign({ _id: user._id }, JWT_SECRET, {
+                expiresIn: "7d",
+              }),
+            })
+      );
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
