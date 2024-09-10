@@ -1,16 +1,17 @@
-# WTWR (What to Wear?): Back End
+# WTWR (What to Wear?): Backend
 
-The project involves setting up a server for the “WTWR” app using Express and MongoDB, with a focus on building out an API. In the first steps, you’ll set up an Express project, configure routes, controllers, and a database, and handle errors. Linting with ESLint and hot-reloading with Nodemon are also part of the process, along with setting up project structure for routes, controllers, and models. You will use Mongoose to define schemas for users and clothing items, and implement features such as adding likes and handling errors with specific HTTP codes. Finally, you’ll test your project using Postman and GitHub Actions, ensuring it meets the necessary requirements.
+Project 13: WTWR (What to Wear?) Backend demonstrates the development of a secure backend using Node.js, Express, and MongoDB, focusing on user authorization and data protection. It includes JWT-based authentication for sign-in/sign-up and middleware for route protection, ensuring only authorized users can access or modify resources. The project validates user input, hashes passwords securely with bcrypt, and handles error responses for issues like invalid credentials or unauthorized access. User profile management is implemented through protected routes, allowing users to update their name and avatar. Data privacy is enforced by excluding passwords from API responses, while access control prevents users from deleting items they don't own.
 
 ## Tech Stack
 
 - Node.js
 - Express
-- MongoDB
-- Mongoose
+- MongoDB (with Mongoose)
+- JWT (JSON Web Tokens) for authorization
+- Validator for email and password validation
+- Bcrypt for hashing passwords
+- Postman for API testing
+- GitHub Actions for CI/CD
 - ESLint with Airbnb Style Guide
-- Prettier
-- Nodemon
-- Validator
-- Postman
-- GitHub Actions
+- Prettier for code formatting
+- Nodemon for development server

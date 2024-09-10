@@ -49,9 +49,10 @@ const deleteItem = (req, res) => {
           .status(forbidden)
           .send({ message: "Forbidden: You can only delete your own items" });
       }
-      return ClothingItem.findByIdAndRemove(itemId);
+      return ClothingItem.findByIdAndRemove(itemId).then(() =>
+        res.status(200).send({ message: "Item successfully deleted" })
+      );
     })
-    .then(() => res.status(200).send({ message: "Item successfully deleted" }))
     .catch((err) => {
       console.error(err);
       if (err.statusCode === notFound)

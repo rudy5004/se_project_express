@@ -10,40 +10,6 @@ const {
   duplicateError,
 } = require("../utils/errors");
 
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.status(200).send(users))
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(internalServerError)
-        .send({ message: "An error has occurred on the server" });
-    });
-};
-
-const getUser = (req, res) => {
-  const { userId } = req.params;
-  return User.findById(userId)
-    .orFail(() => {
-      const error = new Error("User ID not found");
-      error.statusCode = notFound;
-      throw error;
-    })
-    .then((user) => res.status(200).send(user))
-    .catch((err) => {
-      console.error(err);
-      if (err.statusCode === notFound) {
-        return res.status(notFound).send({ message: err.message });
-      }
-      if (err.name === "CastError") {
-        return res.status(badRequest).send({ message: "Invalid data" });
-      }
-      return res
-        .status(internalServerError)
-        .json({ message: "An error has occurred on the server" });
-    });
-};
-
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
@@ -53,7 +19,7 @@ const createUser = (req, res) => {
       .send({ message: "The email field is required" });
   }
 
-  User.findOne({ email })
+  return User.findOne({ email })
     .then((existingUser) => {
       if (existingUser) {
         const error = new Error("Duplicate Email: Email already exists");
@@ -62,14 +28,14 @@ const createUser = (req, res) => {
       }
       return bcrypt.hash(password, 10);
     })
-    .then((hash) => {
-      return User.create({
+    .then((hash) =>
+      User.create({
         name,
         avatar,
         email,
         password: hash,
-      });
-    })
+      })
+    )
     .then((user) => {
       const userObj = user.toObject();
       delete userObj.password;
@@ -179,9 +145,7 @@ const updateCurrentUser = (req, res) => {
 };
 
 module.exports = {
-  getUsers,
   createUser,
-  getUser,
   login,
   getCurrentUser,
   updateCurrentUser,
