@@ -3,6 +3,7 @@ const {
   badRequest,
   notFound,
   internalServerError,
+  forbidden,
 } = require("../utils/errors");
 
 const getItems = (req, res) => {
@@ -34,13 +35,22 @@ const createItem = (req, res) => {
 
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
+  const currentUserId = req.user._id;
+
   ClothingItem.findById(itemId)
     .orFail(() => {
       const error = new Error("Item ID not found");
       error.statusCode = notFound;
       throw error;
     })
-    .then(() => ClothingItem.findByIdAndRemove(itemId))
+    .then((item) => {
+      if (item.owner.toString() !== currentUserId) {
+        return res
+          .status(forbidden)
+          .send({ message: "Forbidden: You can only delete your own items" });
+      }
+      return ClothingItem.findByIdAndRemove(itemId);
+    })
     .then(() => res.status(200).send({ message: "Item successfully deleted" }))
     .catch((err) => {
       console.error(err);
