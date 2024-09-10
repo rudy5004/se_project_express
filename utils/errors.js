@@ -6,5 +6,3 @@ module.exports = {
   internalServerError: 500,
   duplicateError: 409,
 };
-
-// addedd duplicateError
