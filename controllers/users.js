@@ -11,10 +11,8 @@ const {
 } = require("../utils/errors");
 
 const getUsers = (req, res) => {
-  return User.find({})
-    .then((users) => {
-      res.status(200).send(users);
-    })
+  User.find({})
+    .then((users) => res.status(200).send(users))
     .catch((err) => {
       console.error(err);
       return res
@@ -25,7 +23,7 @@ const getUsers = (req, res) => {
 
 const getUser = (req, res) => {
   const { userId } = req.params;
-  User.findById(userId)
+  return User.findById(userId)
     .orFail(() => {
       const error = new Error("User ID not found");
       error.statusCode = notFound;
@@ -56,14 +54,12 @@ const createUser = (req, res) => {
   }
 
   User.findOne({ email })
-
     .then((existingUser) => {
       if (existingUser) {
         const error = new Error("Duplicate Email: Email already exists");
         error.statusCode = duplicateError;
         throw error;
       }
-
       return bcrypt.hash(password, 10);
     })
     .then((hash) => {
@@ -110,16 +106,19 @@ const login = (req, res) => {
           .status(notAuthorized)
           .send({ message: "Invalid email or password" });
       }
-      return bcrypt.compare(password, user.password).then((matched) => {
-        if (!matched)
-          return res
-            .status(notAuthorized)
-            .send({ message: "Invalid email or password" });
-        const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
-          expiresIn: "7d",
-        });
-        return res.send({ token });
-      });
+      return bcrypt
+        .compare(password, user.password)
+        .then((matched) =>
+          !matched
+            ? res
+                .status(notAuthorized)
+                .send({ message: "Invalid email or password" })
+            : res.send({
+                token: jwt.sign({ _id: user._id }, JWT_SECRET, {
+                  expiresIn: "7d",
+                }),
+              })
+        );
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
@@ -167,7 +166,7 @@ const updateCurrentUser = (req, res) => {
       error.statusCode = notFound;
       throw error;
     })
-    .then((updatedUser) => res.status(200).send(updatedUser)) // Return the updated user
+    .then((updatedUser) => res.status(200).send(updatedUser))
     .catch((err) => {
       if (err.name === "ValidationError") {
         return res.status(badRequest).send({ message: "Invalid data" });
