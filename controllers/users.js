@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
-const { JWT_SECRET } = require("../utils/config");
 const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../utils/config");
 const User = require("../models/user");
 const {
   badRequest,
@@ -77,7 +77,7 @@ const createUser = (req, res) => {
     .then((user) => {
       const userObj = user.toObject();
       delete userObj.password;
-      res.status(201).send(userObj);
+      return res.status(201).send(userObj);
     })
     .catch((err) => {
       console.error(err);
@@ -127,7 +127,7 @@ const login = (req, res) => {
         return res.status(badRequest).send({ message: "Invalid data" });
       }
       console.error(err);
-      res
+      return res
         .status(internalServerError)
         .send({ message: "An error occurred on the server" });
     });
