@@ -11,7 +11,7 @@ const {
 } = require("../utils/errors");
 
 const getUsers = (req, res) => {
-  User.find({})
+  return User.find({})
     .then((users) => {
       res.status(200).send(users);
     })
@@ -111,11 +111,10 @@ const login = (req, res) => {
           .send({ message: "Invalid email or password" });
       }
       return bcrypt.compare(password, user.password).then((matched) => {
-        if (!matched) {
+        if (!matched)
           return res
             .status(notAuthorized)
             .send({ message: "Invalid email or password" });
-        }
         const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
           expiresIn: "7d",
         });
