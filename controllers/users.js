@@ -103,6 +103,10 @@ const login = (req, res) => {
               .status(notAuthorized) // Responds with a 401 (Unauthorized) if the password does not match.
               .send({ message: "Invalid email or password" })
           : res.send({
+              name: user.name,
+              avatar: user.avatar,
+              _id: user._id,
+              email: user.email,
               token: jwt.sign({ _id: user._id }, JWT_SECRET, {
                 expiresIn: "7d", // Creates a JWT token that expires in 7 days.
               }),
