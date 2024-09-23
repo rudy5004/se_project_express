@@ -1,9 +1,9 @@
 // Importing jsonwebtoken (JWT) library to verify and decode the JWT tokens for user authentication.
 const jwt = require("jsonwebtoken");
 
-// Importing the error constant `notAuthorized` from the utils/errors module.
-// - notAuthorized (401): Used when the user is not authorized to access a resource, typically due to missing or invalid authorization credentials.
-const { notAuthorized } = require("../utils/errors");
+// Importing the error constant `UnauthorizedError` from the utils/errors module.
+// - UnauthorizedError (401): Used when the user is not authorized to access a resource, typically due to missing or invalid authorization credentials.
+const { UnauthorizedError } = require("../utils/errors");
 
 // Importing the secret key used to sign and verify JWT tokens from the config file.
 const { JWT_SECRET } = require("../utils/config");
@@ -17,7 +17,7 @@ const auth = (req, res, next) => {
   // The middleware responds with a 401 (Not Authorized) status and an appropriate error message.
   if (!authorization || !authorization.startsWith("Bearer ")) {
     return res
-      .status(notAuthorized)
+      .status(UnauthorizedError)
       .send({ message: "Authorization Required" });
   }
 
@@ -31,7 +31,7 @@ const auth = (req, res, next) => {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
     return res
-      .status(notAuthorized)
+      .status(UnauthorizedError)
       .send({ message: "Authorization Required" });
   }
 

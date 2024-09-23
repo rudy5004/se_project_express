@@ -2,9 +2,9 @@
 // The Router is used to group and organize routes into different modules for easier management.
 const router = require("express").Router();
 
-// Importing the `notFound` constant from the `errors` module.
+// Importing the `NotFoundError` constant from the `errors` module.
 // This is used for handling cases where a requested route does not exist, and it represents the HTTP 404 (Not Found) status code.
-const { notFound } = require("../utils/errors");
+const { NotFoundError } = require("../utils/errors");
 
 // Importing the `itemRouter`, which contains all the routes related to clothing items (e.g., creating, deleting, liking items).
 const itemRouter = require("./clothingItems");
@@ -23,7 +23,7 @@ router.use("/users", userRouter);
 // Defining a fallback route handler for any undefined routes (404 Not Found).
 // If a request is made to a route that doesn't match any of the above routes, this handler responds with a 404 status and a custom error message.
 router.use((req, res) => {
-  res.status(notFound).json({ message: "Requested resource not found" });
+  res.status(NotFoundError).json({ message: "Requested resource not found" });
 });
 
 // Exporting the `router` so that it can be used in other parts of the application, typically in the main app file to handle all routing.
