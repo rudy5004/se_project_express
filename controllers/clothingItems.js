@@ -5,22 +5,22 @@ const {
   ForbiddenError,
 } = require("../utils/errors");
 
-const getItems = (req, res, next) => {
-  ClothingItem.find({})
+const getItems = (req, res, next) => 
+   ClothingItem.find({})
     .then((items) => res.status(200).send(items))
-    .catch((err) => next(err));
-};
+    .catch((err) => next(err)) // Pass error to centralized handler
+;
 
 const createItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
   const owner = req.user._id;
-  ClothingItem.create({ name, weather, imageUrl, owner })
+  return ClothingItem.create({ name, weather, imageUrl, owner })
     .then((item) => res.status(201).send(item))
     .catch((err) => {
       if (err.name === "ValidationError") {
         return next(new BadRequestError("Invalid data"));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -28,7 +28,7 @@ const deleteItem = (req, res, next) => {
   const { itemId } = req.params;
   const currentUserId = req.user._id;
 
-  ClothingItem.findById(itemId)
+  return ClothingItem.findById(itemId)
     .orFail(() => {
       throw new NotFoundError("Item ID not found");
     })
@@ -49,12 +49,11 @@ const deleteItem = (req, res, next) => {
       if (err.name === "CastError" || err.name === "ValidationError") {
         return next(new BadRequestError("Invalid data"));
       }
-      next(err);
+      return next(err);
     });
 };
 
-const disLikeItem = (req, res, next) => {
-  ClothingItem.findByIdAndUpdate(
+const disLikeItem = (req, res, next) => ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $pull: { likes: req.user._id } },
     { new: true }
@@ -70,12 +69,10 @@ const disLikeItem = (req, res, next) => {
       if (err.name === "CastError" || err.name === "ValidationError") {
         return next(new BadRequestError("Invalid data"));
       }
-      next(err);
+      return next(err);
     });
-};
 
-const likeItem = (req, res, next) => {
-  ClothingItem.findByIdAndUpdate(
+const likeItem = (req, res, next) => ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $addToSet: { likes: req.user._id } },
     { new: true }
@@ -91,8 +88,7 @@ const likeItem = (req, res, next) => {
       if (err.name === "CastError" || err.name === "ValidationError") {
         return next(new BadRequestError("Invalid data"));
       }
-      next(err);
+      return next(err);
     });
-};
 
 module.exports = { getItems, createItem, deleteItem, disLikeItem, likeItem };

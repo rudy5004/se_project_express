@@ -1,12 +1,17 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const { errors } = require("celebrate");
 const mainRouter = require("./routes/index");
 const { login, createUser } = require("./controllers/users");
 const errorHandler = require("./middlewares/errorHandler"); // Import the error handler
-const { errors } = require("celebrate");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
+const {
+  validateLoginBody,
+  validateUserBody,
+} = require("./middlewares/validation");
 require("dotenv").config();
+
 const app = express();
 const { PORT = 3001 } = process.env;
 
@@ -24,15 +29,11 @@ app.use(express.json());
 // Enable the request logger before routes
 app.use(requestLogger);
 
-app.get("/crash-test", () => {
-  setTimeout(() => {
-    throw new Error("Server will crash now");
-  }, 0);
-});
+// SignIn and SignUp routes (with validation middleware)
+app.post("/signin", validateLoginBody, login);
+app.post("/signup", validateUserBody, createUser);
 
-app.post("/signin", login);
-app.post("/signup", createUser);
-
+// Main router for other routes
 app.use("/", mainRouter);
 
 // Enable the error logger after routes, before the error handlers

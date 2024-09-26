@@ -9,7 +9,7 @@ const validateURL = (value, helpers) => {
   return helpers.error("string.uri");
 };
 
-// 1. Validator for creating a clothing item
+// Validator for creating a clothing item
 module.exports.validateClothingItemBody = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30).messages({
@@ -19,7 +19,7 @@ module.exports.validateClothingItemBody = celebrate({
     }),
     imageUrl: Joi.string().required().custom(validateURL).messages({
       "string.empty": 'The "imageUrl" field must be filled in',
-      "string.uri": 'The "imageUrl" field must be a valid url',
+      "string.uri": 'The "imageUrl" field must be a valid URL',
     }),
     weather: Joi.string().required().messages({
       "string.empty": 'The "weather" field must be filled in',
@@ -27,7 +27,6 @@ module.exports.validateClothingItemBody = celebrate({
   }),
 });
 
-// 2. Validator for user creation
 module.exports.validateUserBody = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30).messages({
@@ -37,7 +36,7 @@ module.exports.validateUserBody = celebrate({
     }),
     avatar: Joi.string().required().custom(validateURL).messages({
       "string.empty": 'The "avatar" field must be filled in',
-      "string.uri": 'The "avatar" field must be a valid url',
+      "string.uri": 'The "avatar" field must be a valid URL',
     }),
     email: Joi.string()
       .required()
@@ -57,7 +56,7 @@ module.exports.validateUserBody = celebrate({
   }),
 });
 
-// 3. Validator for user login
+// Validator for user login
 module.exports.validateLoginBody = celebrate({
   body: Joi.object().keys({
     email: Joi.string()
@@ -78,24 +77,13 @@ module.exports.validateLoginBody = celebrate({
   }),
 });
 
-const { Joi, celebrate } = require("celebrate");
-const validator = require("validator");
-
-// 4. Validator for validating IDs from URL parameters (24-character hexadecimal)
+// Validator for validating IDs from URL parameters (24-character hexadecimal)
 module.exports.validateId = celebrate({
   params: Joi.object().keys({
-    id: Joi.string()
-      .required()
-      .custom((value, helpers) => {
-        if (!validator.isHexadecimal(value) || value.length !== 24) {
-          return helpers.message(
-            'The "id" must be a valid 24-character hexadecimal string'
-          );
-        }
-        return value;
-      })
-      .messages({
-        "string.empty": 'The "id" field must be filled in',
-      }),
+    itemId: Joi.string().length(24).hex().required().messages({
+      "string.length":
+        'The "itemId" must be a valid 24-character hexadecimal string',
+      "string.hex": 'The "itemId" must be a valid hexadecimal string',
+    }),
   }),
 });

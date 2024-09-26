@@ -33,14 +33,14 @@ const createUser = (req, res, next) => {
     )
     .then((user) => {
       const userObj = user.toObject();
-      delete userObj.password;
+      delete userObj.password; // Prevent password from being sent in the response
       return res.status(201).send(userObj);
     })
     .catch((err) => {
-      if (err instanceof ConflictError || err.name === "ValidationError") {
-        return next(err);
+      if (err.name === "ValidationError") {
+        return next(new BadRequestError("Invalid data")); // Pass BadRequestError for ValidationError
       }
-      next(err);
+      return next(err); // Remove ConflictError check, pass err to default handler
     });
 };
 
@@ -52,7 +52,7 @@ const login = (req, res, next) => {
   }
 
   return User.findOne({ email })
-    .select("+password")
+    .select("+password") // Explicitly include the password field in the query
     .then((user) => {
       if (!user) {
         throw new UnauthorizedError("Invalid email or password");
@@ -76,10 +76,9 @@ const login = (req, res, next) => {
       if (err.name === "ValidationError") {
         return next(new BadRequestError("Invalid data"));
       }
-      next(err);
+      return next(err);
     });
 };
-
 const getCurrentUser = (req, res, next) => {
   const userId = req.user._id;
 
@@ -108,7 +107,7 @@ const updateCurrentUser = (req, res, next) => {
       if (err.name === "ValidationError") {
         return next(new BadRequestError("Invalid data"));
       }
-      next(err);
+      return next(err);
     });
 };
 

@@ -32,6 +32,7 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, "The password field is required"],
+    select: false, // Prevents password from being returned in queries
   },
 });
 
