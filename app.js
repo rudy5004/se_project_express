@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -10,8 +11,6 @@ const {
   validateLoginBody,
   validateUserBody,
 } = require("./middlewares/validation");
-require("dotenv").config();
-
 const app = express();
 const { PORT = 3001 } = process.env;
 
