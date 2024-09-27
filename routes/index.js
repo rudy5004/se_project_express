@@ -1,7 +1,7 @@
-const { NotFoundError } = require("../utils/errors");
+const router = require("express").Router();
+const { NotFoundError } = require("../utils/errors/index");
 // Importing the Express Router to define route handlers.
 // The Router is used to group and organize routes into different modules for easier management.
-const router = require("express").Router();
 
 // Importing the `itemRouter`, which contains all the routes related to clothing items (e.g., creating, deleting, liking items).
 const itemRouter = require("./clothingItems");

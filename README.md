@@ -15,3 +15,10 @@ Project 15: WTWR (What to Wear?) Backend demonstrates the development of a secur
 - ESLint with Airbnb Style Guide
 - Prettier for code formatting
 - Nodemon for development server
+
+## Deployment
+
+- Links:
+- https://wtwr.mylogisoft.com
+- https://www.wtwr.mylogisoft.com
+- https://api.wtwr.mylogisoft.com

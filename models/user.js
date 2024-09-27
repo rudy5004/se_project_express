@@ -10,13 +10,13 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
+    required: [true, "The avatar field is required"], // Avatar is now required
     validate: {
       validator(value) {
-        return !value || validator.isURL(value); // Allows empty values or valid URLs.
+        return validator.isURL(value); // Only allows valid URLs, no empty values allowed.
       },
       message: "You must enter a valid URL", // Custom error message if the URL is invalid.
     },
-    default: "", // Default to an empty string if no avatar is provided.
   },
   email: {
     type: String,

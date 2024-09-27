@@ -3,14 +3,12 @@ const {
   BadRequestError,
   NotFoundError,
   ForbiddenError,
-} = require("../utils/errors");
+} = require("../utils/errors/index");
 
-const getItems = (req, res, next) => 
-   ClothingItem.find({})
+const getItems = (req, res, next) =>
+  ClothingItem.find({})
     .then((items) => res.status(200).send(items))
-    .catch((err) => next(err)) // Pass error to centralized handler
-;
-
+    .catch((err) => next(err)); // Pass error to centralized handler
 const createItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
   const owner = req.user._id;
@@ -53,7 +51,8 @@ const deleteItem = (req, res, next) => {
     });
 };
 
-const disLikeItem = (req, res, next) => ClothingItem.findByIdAndUpdate(
+const disLikeItem = (req, res, next) =>
+  ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $pull: { likes: req.user._id } },
     { new: true }
@@ -72,7 +71,8 @@ const disLikeItem = (req, res, next) => ClothingItem.findByIdAndUpdate(
       return next(err);
     });
 
-const likeItem = (req, res, next) => ClothingItem.findByIdAndUpdate(
+const likeItem = (req, res, next) =>
+  ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $addToSet: { likes: req.user._id } },
     { new: true }
